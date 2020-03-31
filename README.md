@@ -7,9 +7,9 @@ This package includes:
 	- `subscriber_member_function.cpp` - a C++ listener to the `topic` ROS topic
 
 - Multiple launch files:
-	- `talker.py` - starts a publisher 
-	- `listener.py` - starts a listener
-	- `both.py` - starts both a publisher and a listener
+	- `talker.launch.py` - starts a publisher 
+	- `listener.launch.py` - starts a listener
+	- `both.launch.py` - starts both a publisher and a listener
 
 - Configuration files:
 	- `package.xml` - with information of the package and dependencies (just `rclcpp`and `std_msgs`).
@@ -20,11 +20,10 @@ This package includes:
 ├── CMakeLists.txt
 ├── Dockerfile
 ├── README.md
-├── hi.py
 ├── launch
-│   ├── both.py
-│   ├── listener.py
-│   └── talker.py
+│   ├── both.launch.py
+│   ├── listener.launch.py
+│   └── talker.launch.py
 ├── package.xml
 ├── src
 │   ├── fuzztarget.py
@@ -63,9 +62,9 @@ ros2 run cpp_pubsub listener
 
 To run launch files:
 ```
-ros2 launch both.py
-ros2 launch talker.py
-ros2 launch listener.py
+ros2 launch both.launch.py
+ros2 launch talker.launch.py
+ros2 launch listener.launch.py
 ```
 
 Command to run the fuzztalker and a listener:
