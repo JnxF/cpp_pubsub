@@ -11,4 +11,4 @@ ENV ROS_WS /opt/ros_ws
 RUN mkdir -p $ROS_WS/src
 WORKDIR $ROS_WS
 
-COPY cpp_pubsub src/cpp_pubsub
+COPY . src/cpp_pubsub
