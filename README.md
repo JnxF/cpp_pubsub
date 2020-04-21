@@ -47,7 +47,7 @@ build a docker container from the Dockerfile and running it.
 Navigate to the root path of this repository and run
 ```bash
 chmod +x start.bash  # Just first time
-./start.bash
+source start.bash
 ```
 
 Expect your console to look like the following.
@@ -89,4 +89,13 @@ docker ps # Check running docker instance
 docker exec -it d4c696afe176 bash # Replace by your existing id
 # Now inside, rerun this command and you'll operate normaly
 source /opt/ros/eloquent/setup.bash
+```
+
+
+## Running AFL
+```
+source src/cpp_pubsub/afl-config.bash  
+colcon build --packages-select cpp_pubsub
+cd install/cpp_pubsub/lib/cpp_pubsub/
+afl-fuzz -i inputs/ -o outputs/ ./cpp_fuzztarget 
 ```
