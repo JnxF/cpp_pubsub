@@ -5,6 +5,8 @@ This package includes:
 - Source code:
 	- `publisher_member_function.cpp` - a C++ publisher to the `topic` ROS topic
 	- `subscriber_member_function.cpp` - a C++ listener to the `topic` ROS topic
+	- `cpp_fuzztarget.cpp` - A publisher that publishes the entire standard
+	  input as a message.
 
 - Multiple launch files:
 	- `talker.launch.py` - starts a publisher 
@@ -20,12 +22,14 @@ This package includes:
 ├── CMakeLists.txt
 ├── Dockerfile
 ├── README.md
+├── afl-config.bash
 ├── launch
 │   ├── both.launch.py
 │   ├── listener.launch.py
 │   └── talker.launch.py
 ├── package.xml
 ├── src
+│   ├── cpp_fuzztarget.cpp
 │   ├── fuzztarget.py
 │   ├── publisher_member_function.cpp
 │   └── subscriber_member_function.cpp
@@ -67,6 +71,12 @@ ros2 launch talker.launch.py
 ros2 launch listener.launch.py
 ```
 
+To run the fuzz target:
+```
+cd /opt/ros_ws/install/cpp_pubsub/lib/cpp_pubsub/
+echo "line 1\nline2" | ./cpp_fuzztarget
+```
+
 Command to run the fuzztalker and a listener:
 ```bash
 python3 fuzztarget.py & ros2 run cpp_pubsub listener
@@ -75,7 +85,8 @@ python3 fuzztarget.py & ros2 run cpp_pubsub listener
 If needed multiple docker images:
 
 ```bash
+docker ps # Check running docker instance
 docker exec -it d4c696afe176 bash # Replace by your existing id
-# Now inside, rerun this command and you´ll operate normaly
+# Now inside, rerun this command and you'll operate normaly
 source /opt/ros/eloquent/setup.bash
 ```
