@@ -38,4 +38,9 @@ install(TARGETS
   cpp_fuzztarget
   DESTINATION lib/${PROJECT_NAME})
 
+# Copy input folder to test with AFL
+install(DIRECTORY inputs
+	DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()
