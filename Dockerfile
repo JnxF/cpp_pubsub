@@ -2,21 +2,22 @@
 # Paste your Dockerfile here.
 
 FROM ros:eloquent
+ENV DEBIAN_FRONTEND noninteractive
+
 
 # Install tools
 RUN apt-get update > /dev/null \
+	&& apt-get install -y --no-install-recommends apt-utils > /dev/null \
 	&& apt-get install -y afl > /dev/null \
 	&& apt-get install -y vim > /dev/null \
-	&& apt-get install -y git > /dev/null
+	&& apt-get install -y git > /dev/null \
+	&& apt-get install -y clang > /dev/null \
+	&& apt-get install -y iproute2 > /dev/null \
+	&& apt-get install -y lcov > /dev/null \
+	&& apt-get install -y graphviz-dev > /dev/null
 
 # Initialize ROS environment
 RUN /bin/bash -c "source /opt/ros/eloquent/setup.bash"
-
-# Install AFL
-#RUN mkdir /afl
-#RUN cd /afl && git clone https://github.com/google/AFL.git
-#RUN cd /afl/AFL && make
-#RUN cd /afl/AFL && make install
 
 ENV ROS_WS /opt/ros_ws
 
@@ -30,4 +31,3 @@ WORKDIR $ROS_WS
 COPY . src/cpp_pubsub
 
 RUN chmod +x src/cpp_pubsub/afl-config.bash
-RUN ./src/cpp_pubsub/afl-config.bash

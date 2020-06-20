@@ -99,3 +99,86 @@ colcon build --packages-select cpp_pubsub
 cd install/cpp_pubsub/lib/cpp_pubsub/
 afl-fuzz -i inputs/ -o outputs/ ./cpp_fuzztarget 
 ```
+
+# Starting the fuzzer
+```
+source src/cpp_pubsub/afl-config.bash  
+colcon build --packages-select cpp_pubsub
+. install/setup.bash
+ros2 run cpp_pubsub listener &
+cd install/cpp_pubsub/lib/cpp_pubsub/
+afl-fuzz -m none -t 15000 -i inputs/ -o outputs/ ./cpp_fuzztarget
+```
+
+# Injecting code
+```
+colcon build --packages-select cpp_pubsub
+. install/setup.bash
+cd install/cpp_pubsub/lib/cpp_pubsub/
+LD_PRELOAD=./libinjector.so ./listener
+```
+
+# AFL with injected code
+```
+source src/cpp_pubsub/afl-config.bash  
+colcon build --packages-select cpp_pubsub
+cd install/cpp_pubsub/lib/cpp_pubsub/
+export LD_PRELOAD=./libinjector.so
+afl-fuzz -m none -t 15000 -i inputs/ -o outputs/ LD_PRELOAD=./libinjector ./listener
+```
+LD_PRELOAD=/libinjector.so afl-fuzz -m none -t 15000 -i inputs/ -o outputs/ -- ./listener
+
+
+
+vim input.txt
+
+cat input.txt | LD_PRELOAD=./libinjector.so ./listener
+
+# Fixed
+```
+source src/cpp_pubsub/afl-config.bash  
+colcon build --packages-select cpp_pubsub
+. install/setup.bash
+cd install/cpp_pubsub/lib/cpp_pubsub/
+export AFL_PRELOAD=/opt/ros_ws/install/cpp_pubsub/lib/cpp_pubsub/libinjector.so
+afl-fuzz -m none -i inputs/ -o outputs/ ./listener
+
+
+cat inputs/input0.txt | LD_PRELOAD=./libinjector.so ./listener
+
+```
+
+source src/cpp_pubsub/afl-config.bash  
+colcon build --packages-select cpp_pubsub
+. install/setup.bash
+cd install/cpp_pubsub/lib/cpp_pubsub/
+time python3 ../../../../src/cpp_pubsub/generators/gen.py | LD_PRELOAD=./libinjector.so ./listener
+
+
+
+colcon build --packages-select cpp_pubsub
+. install/setup.bash
+cd install/cpp_pubsub/lib/cpp_pubsub/
+time cat /dev/urandom | LD_PRELOAD=./libinjector.so ./listener
+
+
+
+afl-fuzz -m none -t 15000 -i inputs/ -o outputs/ ./listener
+
+
+afl-fuzz -d -i inputs/ -o outputs/ -N tcp://127.0.0.1/7413 -P RTSP -D 100000 -n -q 3 -s 3 -E -K -R ./listener 7413
+
+
+if [ $? -eq 0 ]; then
+    echo OK
+else
+    echo FAIL
+fi
+
+
+git clone https://github.com/linux-test-project/lcov.git
+cd lcov
+make install
+cd ..
+
+ (echo "as das das das das das da sd asd " && sleep 2 && echo "holita" )| LD_PRELOAD=./libinjector.so ./listener

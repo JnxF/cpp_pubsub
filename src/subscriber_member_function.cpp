@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <iostream>
 #include <memory>
-
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 using std::placeholders::_1;
@@ -24,6 +24,7 @@ public:
   MinimalSubscriber()
   : Node("minimal_subscriber")
   {
+    RCLCPP_INFO(this->get_logger(), "Node started to listen");
     subscription_ = this->create_subscription<std_msgs::msg::String>(
       "topic", 10, std::bind(&MinimalSubscriber::topic_callback, this, _1));
   }
@@ -32,12 +33,24 @@ private:
   void topic_callback(const std_msgs::msg::String::SharedPtr msg) const
   {
     RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg->data.c_str());
+
+    // Process code...
+
+    // Wrong answer 
+    if ( ((int) ((msg->data)[0])) < 127) {
+      RCLCPP_INFO(this->get_logger(), "I have blown up");
+      std::cout << 1/0 << std::endl;
+      abort();
+    }
   }
+
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
 };
 
+
 int main(int argc, char * argv[])
 {
+  std::cout << "Starting node" << std::endl;
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<MinimalSubscriber>());
   rclcpp::shutdown();
